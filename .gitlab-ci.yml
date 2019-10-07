@@ -8,6 +8,9 @@ build:
     before_script:
         - pacman -Sy --noconfirm 
         - pacman -S python --noconfirm 
+        - pip install Pillow
+        - pip install numpy
+        - pip install pycrypto
     script:
         - python -m py_compile Image-Steganography.py 
 

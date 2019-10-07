@@ -325,31 +325,31 @@ def steganography_decode(image):
 def usage():
     """Prints the usage for the program."""
 
-    print "==== USAGE ===="
-    print "-e, --encode"
-    print "Takes the .png provided through the --input agruement, encodes the data file provided through the --data agruement and outputs the resulting image to the path provided by the --output agruement. If the --key agruement is present the data file is encryped with the key via CBC AES before encoding."
-    print ""
-    print "-d, --decode"
-    print "Takes the .png provided through the --input agruement, decodes the data file embedded and outputs the decoded file to the path provided by the --output agruement. If the --key agruement is present the decoded file is decryped with the key via CBC AES before outputing the decoded file to the provided path."
-    print ""
-    print "-i, --input"
-    print "The path to the .png to use as input."
-    print ""
-    print "-o, --output"
-    print "The path to the outputed encoded .png when ran in encode mode or the path to the outputed decoded data when ran in decode mode."
-    print ""
-    print "--data"
-    print "The data to encode into the input .png when encoding."
-    print ""
-    print "-k, --key"
-    print "The cryptographic key to use in the AES CBC encryption/decryption."
-    print ""
-    print "-v, --verbose"
-    print "Causes the program to be verbose in it's operation."
-    print ""
-    print "-h, --help"
-    print "Displays this message."
-    print ""
+    print("==== USAGE ====");
+    print("-e, --encode");
+    print("Takes the .png provided through the --input agruement, encodes the data file provided through the --data agruement and outputs the resulting image to the path provided by the --output agruement. If the --key agruement is present the data file is encryped with the key via CBC AES before encoding.");
+    print("");
+    print("-d, --decode");
+    print("Takes the .png provided through the --input agruement, decodes the data file embedded and outputs the decoded file to the path provided by the --output agruement. If the --key agruement is present the decoded file is decryped with the key via CBC AES before outputing the decoded file to the provided path.");
+    print("");
+    print("-i, --input");
+    print("The path to the .png to use as input.");
+    print("");
+    print("-o, --output");
+    print("The path to the outputed encoded .png when ran in encode mode or the path to the outputed decoded data when ran in decode mode.");
+    print("");
+    print("--data");
+    print("The data to encode into the input .png when encoding.");
+    print("");
+    print("-k, --key");
+    print("The cryptographic key to use in the AES CBC encryption/decryption.");
+    print("");
+    print("-v, --verbose");
+    print("Causes the program to be verbose in it's operation.");
+    print("");
+    print("-h, --help");
+    print("Displays this message.");
+    print("");
 
 
 def main(argv):
