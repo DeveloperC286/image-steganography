@@ -19,7 +19,7 @@ Tested on Ubuntu 17.04.
   <li><b>sudo apt-get install python-pip</b> Installs pip used to install other python modules.</li>
   <li><b>pip install Pillow</b> Installs Python Imaging Library (PIL). Needed for image manipulation.</li>
   <li><b>pip install numpy</b> Installs numpy. Needed for data/file functions.</li>
-  <li><b>pip install pycrypto</b> Installs pycrypto. Needed for the AES encryption/decryption.</li>
+  <li><b>pip install pycryptodome</b> Installs pycryptodome. Needed for the AES encryption/decryption.</li>
 </ul>
 
 ## Non-Encryption Usage
