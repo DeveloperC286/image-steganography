@@ -10,7 +10,7 @@ build:
         - pacman -S python python-pip --noconfirm 
         - pip install Pillow
         - pip install numpy
-        - pip install pycrypto
+        - pip install pycryptodome 
     script:
         - python -m py_compile Image-Steganography.py 
 
