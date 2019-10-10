@@ -16,7 +16,7 @@ integration-testing:
     stage: integration-testing 
     before_script:
         - pacman -Sy --noconfirm 
-        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome --noconfirm 
+        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome diffutils --noconfirm 
     script:
         - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
         - echo "12345" > input.data
