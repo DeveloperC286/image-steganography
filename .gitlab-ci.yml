@@ -21,6 +21,6 @@ integration-testing:
         - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
         - echo "12345" > input.data
         - ./image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
-        - 
+        - ./image-steganography.py --decode --input output.image.png  --output output.data
         - cmp --silent input.data output.data
 
