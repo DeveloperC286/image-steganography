@@ -10,7 +10,7 @@ build:
         - pacman -Sy --noconfirm 
         - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome --noconfirm  
     script:
-        - python -m py_compile image-steganography.py 
+        - python2 -m py_compile image-steganography.py 
 
 integration-testing:
     stage: integration-testing 
