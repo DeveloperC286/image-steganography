@@ -1,6 +1,6 @@
 #!/usr/bin/python2
-#https://gitlab.com/DeveloperC/Image-Steganography
-import getopt
+#https://gitlab.com/DeveloperC/image-steganography
+import argparse
 import sys
 import logging
 import os
@@ -60,7 +60,7 @@ def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
 
 def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
     """Decrypts the file provided from in_filename using CBC AES decryption with
-    the provided key, oututting the decrypted file to the path provided
+    the provided key, outputting the decrypted file to the path provided
     in out_filename. Modified from http://bit.ly/1Ks4MMe
 
     Parameters
@@ -304,7 +304,7 @@ def steganography_decode(image):
 
         binary_data = ""
 
-        logging.info("    Decoding the embeded data...")
+        logging.info("    Decoding the embedded data...")
         for i in range(0, length):
             if pos > 2:
                 pos = 0
@@ -322,145 +322,88 @@ def steganography_decode(image):
         sys.exit(1)
 
 
-def usage():
-    """Prints the usage for the program."""
-
-    print("==== USAGE ====");
-    print("-e, --encode");
-    print("Takes the .png provided through the --input agruement, encodes the data file provided through the --data agruement and outputs the resulting image to the path provided by the --output agruement. If the --key agruement is present the data file is encryped with the key via CBC AES before encoding.");
-    print("");
-    print("-d, --decode");
-    print("Takes the .png provided through the --input agruement, decodes the data file embedded and outputs the decoded file to the path provided by the --output agruement. If the --key agruement is present the decoded file is decryped with the key via CBC AES before outputing the decoded file to the provided path.");
-    print("");
-    print("-i, --input");
-    print("The path to the .png to use as input.");
-    print("");
-    print("-o, --output");
-    print("The path to the outputed encoded .png when ran in encode mode or the path to the outputed decoded data when ran in decode mode.");
-    print("");
-    print("--data");
-    print("The data to encode into the input .png when encoding.");
-    print("");
-    print("-k, --key");
-    print("The cryptographic key to use in the AES CBC encryption/decryption.");
-    print("");
-    print("-v, --verbose");
-    print("Causes the program to be verbose in it's operation.");
-    print("");
-    print("-h, --help");
-    print("Displays this message.");
-    print("");
-
-
 def main(argv):
-    """The main method for taking in the agruements and calling the relevant subroutines.
+    """The main method for taking in the arguments and calling the relevant subroutines.
 
     Parameters
     ----------
     argv : list
-        A list containing the agruements provided by the user.
+        A list containing the arguments provided by the user.
 
     """
 
-    # sorting out args provided
-    try:
-        opts, args = getopt.getopt(argv, 'hvedo:i:k:', ['help', 'verbose', 'decode', 'encode', 'output=', 'input=', 'data=', 'key='])
-    except getopt.GetoptError:
-        logging.info("Error getting/parsing the arguements.")
-        sys.exit(2)
-
-    encode = False
-    decode = False
-    input_file = ""
-    output_file = ""
-    data_file = ""
-    key = ""
-    verbose = False
-
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        elif opt in ('-v', '--verbose'):
-            verbose = True
-        elif opt in ("-e", "--encode"):
-            encode = True
-        elif opt in ("-d", "--decode"):
-            decode = True
-        elif opt in ("-i", "--input"):
-            input_file = arg
-        elif opt in ("-o", "--output"):
-            output_file = arg
-        elif opt == '--data':
-            data_file = arg
-        elif opt in ("-k", "--key"):
-            key = arg
-        else:
-            logging.warning("Unreconcised arguemeant "+opt)
-
-    # setting output verbose level from args
-    if verbose:
-        logging.basicConfig(format=" % (levelname)s:  % (message)s", level=logging.DEBUG)
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Causes the program to be verbose in it\'s output logging.')
+    parser.add_argument('-e', '--encode', action="store_true", default=False, help="Takes the .png provided through the --input argument, encodes the data file provided through the --data arguments and outputs the resulting image to the path provided by the --output argument. If the --key argument is present the data file is encrypted with the key via CBC AES before encoding.")
+    parser.add_argument('-d', '--decode', action="store_true", default=False, help="Takes the .png provided through the --input argument, decodes the data file embedded and outputs the decoded file to the path provided by the --output argument. If the --key argument is present the decoded file is decrypted with the key via CBC AES before outputting the decoded file to the provided path.")
+    parser.add_argument('-i', '--input', required=False, type=str, help="The path to the .png to use as input.")
+    parser.add_argument('-o', '--output', required=False, type=str, help="The path to the outputted encoded .png when ran in encode mode or the path to the outputted decoded data when ran in decode mode.")
+    parser.add_argument('--data', required=False, type=str, help="The data to encode into the input .png when encoding.")
+    parser.add_argument('-k', '--key', required=False, type=str, help="The cryptographic key to use in the AES CBC encryption/decryption.")
+    args = parser.parse_args()
+  
+    data_file = args.data_file 
+ 
+    if args.verbose:
+        logging.basicConfig(format=" %(levelname)s:  %(message)s", level=logging.DEBUG)
         logging.info("Verbose output.")
     else:
-        logging.basicConfig(format=" % (levelname)s:  % (message)s")
+        logging.basicConfig(format=" %(levelname)s:  %(message)s")
 
-    if ((decode is True and encode is True) or (decode is False and encode is False)):
-        logging.warning("Encoding or Decoding not selected, see usage.")
+    if ((args.decode is True and args.encode is True) or (args.decode is False and args.encode is False)):
+        logging.warning("Encoding or Decoding not selected, see help.")
         sys.exit(2)
-    elif (encode is True):
+    elif (args.encode is True):
         logging.info("Encoding.")
-
-        logging.info(" Checking have all needed agruements.")
-        if output_file != "" and input_file != "" and data_file != "":
-            logging.info(" input_file = "+input_file)
-            logging.info(" output_file = "+output_file)
+ 
+        if args.output_file != "" and args.input_file != "" and data_file != "":
+            logging.info(" input_file = "+args.input_file)
+            logging.info(" output_file = "+args.output_file)
             logging.info(" data_file = "+data_file)
 
-            if (key != ""):
+            if (args.key != ""):
                 logging.info(" Encrypting data file...")
-                encrypt_file(key, data_file)
+                encrypt_file(args.key, data_file)
                 data_file += ".enc"
 
-            logging.info(" Reading in image "+input_file+" to encode...")
-            encoding = open_image(input_file)
+            logging.info(" Reading in image "+args.input_file+" to encode...")
+            encoding = open_image(args.input_file)
             logging.info(" Encoding the image...")
             encoded = steganography_encode(encoding, read_binary_string(data_file))
-            logging.info(" Saving the encoded image as "+output_file+"...")
-            save_image(encoded, output_file)
+            logging.info(" Saving the encoded image as "+args.output_file+"...")
+            save_image(encoded, args.output_file)
 
-            if (key != ""):
+            if (args.key != ""):
                 logging.info(" Deleting the encrypting data file...")
                 os.remove(data_file)
         else:
-            logging.warning("Not the required arguements for encoding. See usage.")
+            logging.warning("Not the required arguments for encoding, see help.")
             sys.exit(2)
-    elif (decode is True):
+    elif (args.decode is True):
         logging.info("Decoding.")
 
-        logging.info(" Checking have all needed agruements.")
-        if output_file != "" and input_file != "":
-            logging.info(" input_file = "+input_file)
-            logging.info(" output_file = "+output_file)
+        if args.output_file != "" and args.input_file != "":
+            logging.info(" input_file = "+args.input_file)
+            logging.info(" output_file = "+args.output_file)
 
-            logging.info(" Reading in image "+input_file+" to decode...")
-            decoding = open_image(input_file)
+            logging.info(" Reading in image "+args.input_file+" to decode...")
+            decoding = open_image(args.input_file)
             logging.info(" Decoding the image...")
             decoded = steganography_decode(decoding)
 
-            if (key != ""):
-                logging.info(" Saving the decoded encrypted data as "+output_file+".enc...")
-                write_binary_string(decoded, output_file+'.enc')
-                logging.info(" Decrpyting the data file...")
-                decrypt_file(key, output_file+'.enc')
+            if (args.key != ""):
+                logging.info(" Saving the decoded encrypted data as "+args.output_file+".enc...")
+                write_binary_string(decoded, args.output_file+'.enc')
+                logging.info(" Decrypting the data file...")
+                decrypt_file(args.key, args.output_file+'.enc')
                 logging.info(" Deleting the encrypting data file...")
-                os.remove(output_file+'.enc')
+                os.remove(args.output_file+'.enc')
             else:
-                logging.info(" Saving the decoded data as "+output_file+"...")
-                write_binary_string(decoded, output_file)
+                logging.info(" Saving the decoded data as "+args.output_file+"...")
+                write_binary_string(decoded, args.output_file)
 
         else:
-            logging.warning("Not the required arguements for decoding. See usage.")
+            logging.warning("Not the required arguments for decoding. See help.")
             sys.exit(2)
 
 
