@@ -2,15 +2,25 @@ image: archlinux/base
 
 stages:
     - build
+    - integration-testing
 
 build:
     stage: build
     before_script:
         - pacman -Sy --noconfirm 
-        - pacman -S python python-pip --noconfirm 
-        - pip install Pillow
-        - pip install numpy
-        - pip install pycryptodome 
+        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome --noconfirm  
     script:
-        - python -m py_compile Image-Steganography.py 
+        - python -m py_compile image-steganography.py 
+
+integration-testing:
+    stage: integration-testing 
+    before_script:
+        - pacman -Sy --noconfirm 
+        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome --noconfirm 
+    script:
+        - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
+        - echo "12345" > input.data
+        - ./image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
+        - 
+        - cmp --silent input.data output.data
 

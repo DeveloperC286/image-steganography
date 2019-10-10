@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 #https://gitlab.com/DeveloperC/Image-Steganography
 import getopt
 import sys
