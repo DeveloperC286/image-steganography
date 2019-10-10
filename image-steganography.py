@@ -336,10 +336,10 @@ def main(argv):
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Causes the program to be verbose in it\'s output logging.')
     parser.add_argument('-e', '--encode', action="store_true", default=False, help="Takes the .png provided through the --input argument, encodes the data file provided through the --data arguments and outputs the resulting image to the path provided by the --output argument. If the --key argument is present the data file is encrypted with the key via CBC AES before encoding.")
     parser.add_argument('-d', '--decode', action="store_true", default=False, help="Takes the .png provided through the --input argument, decodes the data file embedded and outputs the decoded file to the path provided by the --output argument. If the --key argument is present the decoded file is decrypted with the key via CBC AES before outputting the decoded file to the provided path.")
-    parser.add_argument('-i', '--input', required=False, type=str, help="The path to the .png to use as input.")
-    parser.add_argument('-o', '--output', required=False, type=str, help="The path to the outputted encoded .png when ran in encode mode or the path to the outputted decoded data when ran in decode mode.")
-    parser.add_argument('--data', required=False, type=str, help="The data to encode into the input .png when encoding.")
-    parser.add_argument('-k', '--key', required=False, type=str, help="The cryptographic key to use in the AES CBC encryption/decryption.")
+    parser.add_argument('-i', '--input', type=str, help="The path to the .png to use as input.")
+    parser.add_argument('-o', '--output', type=str, help="The path to the outputted encoded .png when ran in encode mode or the path to the outputted decoded data when ran in decode mode.")
+    parser.add_argument('--data', type=str, help="The data to encode into the input .png when encoding.")
+    parser.add_argument('-k', '--key', default='', type=str, help="The cryptographic key to use in the AES CBC encryption/decryption.")
     args = parser.parse_args()
   
     data_file = args.data
