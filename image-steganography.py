@@ -342,13 +342,13 @@ def main(argv):
     parser.add_argument('-k', '--key', required=False, type=str, help="The cryptographic key to use in the AES CBC encryption/decryption.")
     args = parser.parse_args()
   
-    data_file = args.data_file 
+    data_file = args.data
  
     if args.verbose:
-        logging.basicConfig(format=" %(levelname)s:  %(message)s", level=logging.DEBUG)
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
         logging.info("Verbose output.")
     else:
-        logging.basicConfig(format=" %(levelname)s:  %(message)s")
+        logging.basicConfig(format="%(levelname)s: %(message)s")
 
     if ((args.decode is True and args.encode is True) or (args.decode is False and args.encode is False)):
         logging.warning("Encoding or Decoding not selected, see help.")
