@@ -130,32 +130,32 @@ def save_image(image, path):
     image.save(path, 'png')
 
 
-def read_binary_string(input_file):
+def read_binary_string(input):
     """Returns a string which contains the binary representation of
-    the input_file provided.
+    the input provided.
 
     Parameters
     ----------
-    input_file : str
+    input : str
         The path to the file to read the binary representation of.
 
     Returns
     -------
     binary_string : str
-        A string which is the binary representation of the input_file.
+        A string which is the binary representation of the input.
 
     """
 
-    return re.sub("[^0-1]", "", str(unpackbits(fromfile(input_file, dtype="uint8"))))
+    return re.sub("[^0-1]", "", str(unpackbits(fromfile(input, dtype="uint8"))))
 
 
-def write_binary_string(binary_string, output_file):
+def write_binary_string(binary_string, output):
     """Writes the binary representation within the provided binary_string
-    to the output_file path provided. Modified from http://bit.ly/2vnIJ99
+    to the output path provided. Modified from http://bit.ly/2vnIJ99
 
     Parameters
     ----------
-    output_file : str
+    output : str
         The path to the output file being written to.
     binary_string : str
         The binary representation of the file, to be written.
@@ -163,7 +163,7 @@ def write_binary_string(binary_string, output_file):
     """
 
     sio = StringIO(binary_string)
-    f = open(output_file, 'wb')
+    f = open(output, 'wb')
 
     while 1:
         b = sio.read(8)
@@ -356,9 +356,9 @@ def main(argv):
     elif (args.encode is True):
         logging.info("Encoding.")
  
-        if args.output_file != "" and args.input_file != "" and data_file != "":
-            logging.info(" input_file = "+args.input_file)
-            logging.info(" output_file = "+args.output_file)
+        if args.output != "" and args.input != "" and data_file != "":
+            logging.info(" input = "+args.input)
+            logging.info(" output = "+args.output)
             logging.info(" data_file = "+data_file)
 
             if (args.key != ""):
@@ -366,12 +366,12 @@ def main(argv):
                 encrypt_file(args.key, data_file)
                 data_file += ".enc"
 
-            logging.info(" Reading in image "+args.input_file+" to encode...")
-            encoding = open_image(args.input_file)
+            logging.info(" Reading in image "+args.input+" to encode...")
+            encoding = open_image(args.input)
             logging.info(" Encoding the image...")
             encoded = steganography_encode(encoding, read_binary_string(data_file))
-            logging.info(" Saving the encoded image as "+args.output_file+"...")
-            save_image(encoded, args.output_file)
+            logging.info(" Saving the encoded image as "+args.output+"...")
+            save_image(encoded, args.output)
 
             if (args.key != ""):
                 logging.info(" Deleting the encrypting data file...")
@@ -382,25 +382,25 @@ def main(argv):
     elif (args.decode is True):
         logging.info("Decoding.")
 
-        if args.output_file != "" and args.input_file != "":
-            logging.info(" input_file = "+args.input_file)
-            logging.info(" output_file = "+args.output_file)
+        if args.output != "" and args.input != "":
+            logging.info(" input = "+args.input)
+            logging.info(" output = "+args.output)
 
-            logging.info(" Reading in image "+args.input_file+" to decode...")
-            decoding = open_image(args.input_file)
+            logging.info(" Reading in image "+args.input+" to decode...")
+            decoding = open_image(args.input)
             logging.info(" Decoding the image...")
             decoded = steganography_decode(decoding)
 
             if (args.key != ""):
-                logging.info(" Saving the decoded encrypted data as "+args.output_file+".enc...")
-                write_binary_string(decoded, args.output_file+'.enc')
+                logging.info(" Saving the decoded encrypted data as "+args.output+".enc...")
+                write_binary_string(decoded, args.output+'.enc')
                 logging.info(" Decrypting the data file...")
-                decrypt_file(args.key, args.output_file+'.enc')
+                decrypt_file(args.key, args.output+'.enc')
                 logging.info(" Deleting the encrypting data file...")
-                os.remove(args.output_file+'.enc')
+                os.remove(args.output+'.enc')
             else:
-                logging.info(" Saving the decoded data as "+args.output_file+"...")
-                write_binary_string(decoded, args.output_file)
+                logging.info(" Saving the decoded data as "+args.output+"...")
+                write_binary_string(decoded, args.output)
 
         else:
             logging.warning("Not the required arguments for decoding. See help.")
