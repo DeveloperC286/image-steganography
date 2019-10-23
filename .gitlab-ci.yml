@@ -1,8 +1,17 @@
 image: archlinux/base
 
 stages:
+    - format
     - build
     - integration-testing
+
+format:
+    stage: format
+    before_script:
+        - pacman -Sy --noconfirm
+        - pacman -S python python-pycodestyle --noconfirm
+    script:
+        - pycodestyle image-steganography.py
 
 build:
     stage: build
