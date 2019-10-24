@@ -15,7 +15,7 @@ from numpy import *
 
 
 def encrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
-    """Encrypts the file provided from in_filename using CBC AES encryption 
+    """Encrypts the file provided from in_filename using CBC AES encryption
     with the provided key, outputting the encrypted file to the path provided
     in out_filename. Modified from http://bit.ly/1Ks4MMe
 
@@ -59,7 +59,7 @@ def encrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
 
 
 def decrypt_file(key, in_filename, out_filename=None, chunksize=24 * 1024):
-    """Decrypts the file provided from in_filename using CBC AES decryption 
+    """Decrypts the file provided from in_filename using CBC AES decryption
     with the provided key, outputting the decrypted file to the path provided
     in out_filename. Modified from http://bit.ly/1Ks4MMe
 
