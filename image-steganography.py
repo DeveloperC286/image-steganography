@@ -1,22 +1,22 @@
 #!/usr/bin/python2
-#https://gitlab.com/DeveloperC/image-steganography
+# https://gitlab.com/DeveloperC/image-steganography
 import argparse
-import sys
 import logging
 import os
 import random
-import struct
 import re
+import struct
+import sys
 
-from cStringIO import StringIO
-from PIL import Image
-from numpy import *
 from Crypto.Cipher import AES
+from PIL import Image
+from cStringIO import StringIO
+from numpy import *
 
 
-def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
-    """Encrypts the file provided from in_filename using CBC AES encryption with
-    the provided key, outputting the encrypted file to the path provided
+def encrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
+    """Encrypts the file provided from in_filename using CBC AES encryption 
+    with the provided key, outputting the encrypted file to the path provided
     in out_filename. Modified from http://bit.ly/1Ks4MMe
 
     Parameters
@@ -58,9 +58,9 @@ def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
                 outfile.write(encryptor.encrypt(chunk))
 
 
-def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
-    """Decrypts the file provided from in_filename using CBC AES decryption with
-    the provided key, outputting the decrypted file to the path provided
+def decrypt_file(key, in_filename, out_filename=None, chunksize=24 * 1024):
+    """Decrypts the file provided from in_filename using CBC AES decryption 
+    with the provided key, outputting the decrypted file to the path provided
     in out_filename. Modified from http://bit.ly/1Ks4MMe
 
     Parameters
@@ -146,7 +146,8 @@ def read_binary_string(input):
 
     """
 
-    return re.sub("[^0-1]", "", str(unpackbits(fromfile(input, dtype="uint8"))))
+    return re.sub("[^0-1]", "",
+                  str(unpackbits(fromfile(input, dtype="uint8"))))
 
 
 def write_binary_string(binary_string, output):
@@ -188,7 +189,8 @@ def steganography_encode(image, binary_string):
     image : PIL.PngImagePlugin.PngImageFile
         The image object for which the binary_string will be encoded into.
     binary_string : str
-        A string containing the binary representation of the data to be encoded.
+        A string containing the binary representation of the data to be
+         encoded.
 
     Returns
     -------
@@ -205,52 +207,53 @@ def steganography_encode(image, binary_string):
         binary_string_len_binary_string = bin(binary_string_len)[2:]
         forLength = (1 + len(binary_string_len_binary_string))
 
-        logging.info("    Bit of space "+str(space))
+        logging.info("Bit of space " + str(space))
 
-        logging.info("    Bits needed to encode data "+str(binary_string_len))
-        logging.info("    Bits needed to encode length "+str(forLength))
-        logging.info("    Total "+str(forLength+binary_string_len))
+        logging.info(
+            "Bits needed to encode data " + str(binary_string_len))
+        logging.info("Bits needed to encode length " + str(forLength))
+        logging.info("Total " + str(forLength + binary_string_len))
 
-        logging.info("    Checking enough space in the image to encode for the data file.")
+        logging.info(
+            "Checking enough space in the image to encode for the data file.")
         if (binary_string_len + forLength) > space:
-            logging.error("    Not enough space in image for the file to be encoded...")
-            logging.error("    Need: "+str(space))
-            logging.error("    Have: "+str(binary_string_len + forLength))
+            logging.error(
+                "Not enough space in image for the file to be encoded...")
+            logging.error("Need: " + str(space))
+            logging.error("Have: " + str(binary_string_len + forLength))
             sys.exit(2)
 
-        logging.info("")
-        logging.info("    Adding the size of the data file to the image.")
+        logging.info("Adding the size of the data file to the image.")
         pos = 1
         index = 1
-        pixel = list(pixels[(index % width), (index/width)])
+        pixel = list(pixels[(index % width), (index / width)])
         pixel[0] = len(binary_string_len_binary_string)
-        pixels[(index % width), (index/width)] = tuple(pixel)
+        pixels[(index % width), (index / width)] = tuple(pixel)
 
-        for i in range(0, (forLength-1)):
+        for i in range(0, (forLength - 1)):
             if pos > 2:
                 pos = 0
                 index = index + 1
 
-            pixel = list(pixels[(index % width), (index/width)])
+            pixel = list(pixels[(index % width), (index / width)])
             pixel[pos] = int(binary_string_len_binary_string[i])
-            pixels[(index % width), (index/width)] = tuple(pixel)
+            pixels[(index % width), (index / width)] = tuple(pixel)
             pos = pos + 1
 
-        logging.info("")
-        logging.info("    Adding the data to the image.")
+        logging.info("Adding the data to the image.")
         for i in range(0, binary_string_len):
             if pos > 2:
                 pos = 0
                 index = index + 1
 
-            pixel = list(pixels[(index % width), (index/width)])
+            pixel = list(pixels[(index % width), (index / width)])
             if str(pixel[pos] % 2) != binary_string[i]:
                 if pixel[pos] == 255:
                     pixel[pos] = 254
                 else:
                     pixel[pos] = pixel[pos] + 1
 
-            pixels[(index % width), (index/width)] = tuple(pixel)
+            pixels[(index % width), (index / width)] = tuple(pixel)
             pos = pos + 1
 
         return image
@@ -283,34 +286,34 @@ def steganography_decode(image):
         pos = 1
         index = 1
 
-        pixel = list(pixels[(index % width), (index/width)])
+        pixel = list(pixels[(index % width), (index / width)])
         binary_string_len_binary_string_len = pixel[0]
         binary_string_len_binary_string = ""
 
-        logging.info("    Working out encoded data length...")
+        logging.info("Working out encoded data length...")
         for i in range(0, binary_string_len_binary_string_len):
             if pos > 2:
                 pos = 0
                 index = index + 1
 
-            pixel = list(pixels[(index % width), (index/width)])
+            pixel = list(pixels[(index % width), (index / width)])
 
             binary_string_len_binary_string += str(pixel[pos] % 2)
 
             pos = pos + 1
 
         length = int(binary_string_len_binary_string, 2)
-        logging.info("    Data length "+str(length)+"...")
+        logging.info("Data length " + str(length) + "...")
 
         binary_data = ""
 
-        logging.info("    Decoding the embedded data...")
+        logging.info("Decoding the embedded data...")
         for i in range(0, length):
             if pos > 2:
                 pos = 0
                 index = index + 1
 
-            pixel = list(pixels[(index % width), (index/width)])
+            pixel = list(pixels[(index % width), (index / width)])
 
             binary_data += str(pixel[pos] % 2)
 
@@ -323,7 +326,8 @@ def steganography_decode(image):
 
 
 def main(argv):
-    """The main method for taking in the arguments and calling the relevant subroutines.
+    """The main method for taking in the arguments and calling the
+     relevant subroutines.
 
     Parameters
     ----------
@@ -333,77 +337,109 @@ def main(argv):
     """
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Causes the program to be verbose in it\'s output logging.')
-    parser.add_argument('-e', '--encode', action="store_true", default=False, help="Takes the .png provided through the --input argument, encodes the data file provided through the --data arguments and outputs the resulting image to the path provided by the --output argument. If the --key argument is present the data file is encrypted with the key via CBC AES before encoding.")
-    parser.add_argument('-d', '--decode', action="store_true", default=False, help="Takes the .png provided through the --input argument, decodes the data file embedded and outputs the decoded file to the path provided by the --output argument. If the --key argument is present the decoded file is decrypted with the key via CBC AES before outputting the decoded file to the provided path.")
-    parser.add_argument('-i', '--input', type=str, help="The path to the .png to use as input.")
-    parser.add_argument('-o', '--output', type=str, help="The path to the outputted encoded .png when ran in encode mode or the path to the outputted decoded data when ran in decode mode.")
-    parser.add_argument('--data', type=str, help="The data to encode into the input .png when encoding.")
-    parser.add_argument('-k', '--key', default='', type=str, help="The cryptographic key to use in the AES CBC encryption/decryption.")
+    parser.add_argument('-v', '--verbose', action="store_true", default=False,
+                        help='Causes the program to be verbose in it\'s output'
+                             ' logging.')
+    parser.add_argument('-e', '--encode', action="store_true", default=False,
+                        help="Takes the .png provided through the --input"
+                             " argument, encodes the data file provided"
+                             " through the --data arguments and outputs the"
+                             " resulting image to the path provided by the"
+                             " --output argument. If the --key argument is"
+                             " present the data file is encrypted with the"
+                             " key via CBC AES before encoding.")
+    parser.add_argument('-d', '--decode', action="store_true", default=False,
+                        help="Takes the .png provided through the --input"
+                             " argument, decodes the data file embedded and"
+                             " outputs the decoded file to the path provided"
+                             " by the --output argument. If the --key argument"
+                             " is present the decoded file is decrypted with"
+                             " the key via CBC AES before outputting the"
+                             " decoded file to the provided path.")
+    parser.add_argument('-i', '--input', type=str,
+                        help="The path to the .png to use as input.")
+    parser.add_argument('-o', '--output', type=str,
+                        help="The path to the outputted encoded .png when ran"
+                             " in encode mode or the path to the outputted "
+                             "decoded data when ran in decode mode.")
+    parser.add_argument('--data', type=str,
+                        help="The data to encode into the input .png when"
+                             " encoding.")
+    parser.add_argument('-k', '--key', default='', type=str,
+                        help="The cryptographic key to use in the AES CBC"
+                             " encryption/decryption.")
     args = parser.parse_args()
-  
+
     data_file = args.data
- 
+
     if args.verbose:
-        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+        logging.basicConfig(format="%(levelname)s: %(message)s",
+                            level=logging.DEBUG)
         logging.info("Verbose output.")
     else:
         logging.basicConfig(format="%(levelname)s: %(message)s")
 
-    if ((args.decode is True and args.encode is True) or (args.decode is False and args.encode is False)):
+    if ((args.decode is True and args.encode is True) or (
+            args.decode is False and args.encode is False)):
         logging.warning("Encoding or Decoding not selected, see help.")
         sys.exit(2)
     elif (args.encode is True):
         logging.info("Encoding.")
- 
+
         if args.output != "" and args.input != "" and data_file != "":
-            logging.info(" input = "+args.input)
-            logging.info(" output = "+args.output)
-            logging.info(" data_file = "+data_file)
+            logging.info(" input = " + args.input)
+            logging.info(" output = " + args.output)
+            logging.info(" data_file = " + data_file)
 
             if (args.key != ""):
                 logging.info(" Encrypting data file...")
                 encrypt_file(args.key, data_file)
                 data_file += ".enc"
 
-            logging.info(" Reading in image "+args.input+" to encode...")
+            logging.info(" Reading in image " + args.input + " to encode...")
             encoding = open_image(args.input)
             logging.info(" Encoding the image...")
-            encoded = steganography_encode(encoding, read_binary_string(data_file))
-            logging.info(" Saving the encoded image as "+args.output+"...")
+            encoded = steganography_encode(encoding,
+                                           read_binary_string(data_file))
+            logging.info(" Saving the encoded image as " + args.output + "...")
             save_image(encoded, args.output)
 
             if (args.key != ""):
                 logging.info(" Deleting the encrypting data file...")
                 os.remove(data_file)
         else:
-            logging.warning("Not the required arguments for encoding, see help.")
+            logging.warning(
+                "Not the required arguments for encoding, see help.")
             sys.exit(2)
     elif (args.decode is True):
         logging.info("Decoding.")
 
         if args.output != "" and args.input != "":
-            logging.info(" input = "+args.input)
-            logging.info(" output = "+args.output)
+            logging.info(" input = " + args.input)
+            logging.info(" output = " + args.output)
 
-            logging.info(" Reading in image "+args.input+" to decode...")
+            logging.info(" Reading in image " + args.input + " to decode...")
             decoding = open_image(args.input)
             logging.info(" Decoding the image...")
             decoded = steganography_decode(decoding)
 
             if (args.key != ""):
-                logging.info(" Saving the decoded encrypted data as "+args.output+".enc...")
-                write_binary_string(decoded, args.output+'.enc')
+                logging.info(
+                    " Saving the decoded encrypted data as " + args.output
+                    + ".enc...")
+                write_binary_string(decoded, args.output + '.enc')
                 logging.info(" Decrypting the data file...")
-                decrypt_file(args.key, args.output+'.enc')
+                decrypt_file(args.key, args.output + '.enc')
                 logging.info(" Deleting the encrypting data file...")
-                os.remove(args.output+'.enc')
+                os.remove(args.output + '.enc')
             else:
-                logging.info(" Saving the decoded data as "+args.output+"...")
+                logging.info(
+                    " Saving the decoded data as " + args.output + "...")
                 write_binary_string(decoded, args.output)
 
         else:
-            logging.warning("Not the required arguments for decoding. See help.")
+            logging.warning(
+                "Not the required arguments for decoding. See help.")
             sys.exit(2)
 
 
