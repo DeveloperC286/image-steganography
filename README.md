@@ -1,4 +1,4 @@
-# Image-Steganography
+# Image Steganography
 
 This Python program provides the capability to conduct image steganography. Encoding or decoding any data into a .png image, with nominal changes to the appearance of the encoded image. The program also has the added capability of automatically implementing AES encryption/decryption on the data file, therefore encoded data if detected, is still confidential.
 
