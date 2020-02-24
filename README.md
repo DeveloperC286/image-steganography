@@ -8,7 +8,7 @@ This Python program provides the capability to conduct image steganography. Enco
   <li>CBC AES encryption/decryption inbuilt.</li>
 </ul>
 
-## Limations
+## Limitations
 <ul>
   <li>Limited available encoding space depending upon image size.</li>
 </ul>
