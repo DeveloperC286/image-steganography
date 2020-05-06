@@ -3,7 +3,7 @@ image: archlinux/base
 stages:
     - format
     - build
-    - integration-testing
+    - end-to-end-tests
 
 format:
     stage: format
@@ -16,16 +16,18 @@ format:
 build:
     stage: build
     before_script:
-        - pacman -Sy --noconfirm 
-        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome --noconfirm  
+        - pacman -Sy --noconfirm
+        - pacman -S python2 python2-pip --noconfirm
+        - pip2 install -r requirements.txt
     script:
-        - python2 -m py_compile image-steganography.py 
+        - python2 -m py_compile image-steganography.py
 
-non-encrypted-testing:
-    stage: integration-testing 
+non-encrypted-end-to-end-test:
+    stage: end-to-end-tests
     before_script:
-        - pacman -Sy --noconfirm 
-        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome diffutils --noconfirm 
+        - pacman -Sy --noconfirm
+        - pacman -S python2 python2-pip diffutils --noconfirm
+        - pip2 install -r requirements.txt
     script:
         - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
         - echo "12345" > input.data
@@ -34,16 +36,15 @@ non-encrypted-testing:
         - cmp --silent input.data output.data
 
 
-encrypted-testing:
-    stage: integration-testing 
+encrypted-end-to-end-test:
+    stage: end-to-end-tests
     before_script:
-        - pacman -Sy --noconfirm 
-        - pacman -S python2 python2-pillow python2-numpy python2-pycryptodome diffutils --noconfirm 
+        - pacman -Sy --noconfirm
+        - pacman -S python2 python2-pip diffutils --noconfirm
+        - pip2 install -r requirements.txt
     script:
         - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
         - echo "12345" > input.data
         - ./image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456
         - ./image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456
         - cmp --silent input.data output.data
-
-
