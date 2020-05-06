@@ -16,37 +16,43 @@ This Python program provides the capability to conduct image steganography. Enco
 
 ## Installing Dependencies
 via Arch Linux's package manager.
-<ul>
-  <li><b>pacman -S python2-pillow python2-numpy python2-pycryptodome</b></li>
-</ul>
+```
+pacman -S python2-pillow python2-numpy python2-pycryptodome
+```
 
 via pip and a virtual environment.
-<ul>
-  <li><b>virtualenv -p python2 .venv</b></li>
-  <li><b>source .venv/bin/activate</b></li>
-  <li><b>pip2 install -r requirements.txt</b></li>
-</ul>
+```
+virtualenv -p python2 .venv
+source .venv/bin/activate
+pip2 install -r requirements.txt
+```
 
 ## Non-Encryption Usage
-
 ### Encoding
-<b>python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png</b>
-<br/>
+```
+python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
+```
+
 Encodes the data 'input.data' into the image 'input.image.png' and outputs the image containing the steganography as 'output.image.png'.
 
 ### Decoding
-<b>python2 image-steganography.py --decode --input output.image.png  --output output.data</b>
-<br/>
+```
+python2 image-steganography.py --decode --input output.image.png  --output output.data
+```
+
 Decodes the data encoded into 'output.image.png' and saves the decoded data file as 'output.data'.
 
 ## Encryption Usage
-
 ### Encoding
-<b>python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456</b>
-<br/>
+```
+python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456
+```
+
 Encrypts 'input.data' with the provided key and outputs the encrypted version as 'input.data.enc'. Encodes the data 'input.data.enc' into the image 'input.image.png' and outputs the image containing the steganography as 'output.image.png'.
 
 ### Decoding
-<b>python2 image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456</b>
-<br/>
+```
+python2 image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456
+```
+
 Decodes the data encoded into 'output.image.png' and saves the decoded data file as 'output.data.enc'. The data file 'output.data.enc' is then decrypted using the provided key and saved as 'output.data'.
