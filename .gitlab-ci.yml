@@ -17,7 +17,9 @@ build:
     stage: build
     before_script:
         - pacman -Sy --noconfirm
-        - pacman -S python2 python2-pip --noconfirm
+        - pacman -S python2 python-virtualenv python2-pip --noconfirm
+        - virtualenv -p python2 .venv
+        - source .venv/bin/activate
         - pip2 install -r requirements.txt
     script:
         - python2 -m py_compile image-steganography.py
@@ -26,13 +28,15 @@ non-encrypted-end-to-end-test:
     stage: end-to-end-tests
     before_script:
         - pacman -Sy --noconfirm
-        - pacman -S python2 python2-pip diffutils --noconfirm
+        - pacman -S python2 python-virtualenv python2-pip diffutils --noconfirm
+        - virtualenv -p python2 .venv
+        - source .venv/bin/activate
         - pip2 install -r requirements.txt
     script:
         - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
         - echo "12345" > input.data
-        - ./image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
-        - ./image-steganography.py --decode --input output.image.png  --output output.data
+        - python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
+        - python2 image-steganography.py --decode --input output.image.png  --output output.data
         - cmp --silent input.data output.data
 
 
@@ -40,11 +44,13 @@ encrypted-end-to-end-test:
     stage: end-to-end-tests
     before_script:
         - pacman -Sy --noconfirm
-        - pacman -S python2 python2-pip diffutils --noconfirm
+        - pacman -S python2 python-virtualenv python2-pip diffutils --noconfirm
+        - virtualenv -p python2 .venv
+        - source .venv/bin/activate
         - pip2 install -r requirements.txt
     script:
         - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
         - echo "12345" > input.data
-        - ./image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456
-        - ./image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456
+        - python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456
+        - python2 image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456
         - cmp --silent input.data output.data

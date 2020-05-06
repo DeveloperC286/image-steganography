@@ -1,5 +1,3 @@
-#!/usr/bin/python2
-# https://gitlab.com/DeveloperC/image-steganography
 import argparse
 import logging
 import os
