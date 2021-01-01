@@ -53,6 +53,9 @@ non-encrypted-end-to-end-test:
     - python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
     - python2 image-steganography.py --decode --input output.image.png  --output output.data
     - cmp --silent input.data output.data
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "master"
 
 
 encrypted-end-to-end-test:
@@ -66,3 +69,6 @@ encrypted-end-to-end-test:
     - python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456
     - python2 image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456
     - cmp --silent input.data output.data
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "master"
