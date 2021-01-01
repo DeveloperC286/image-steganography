@@ -1,10 +1,7 @@
-image: archlinux/base
-
-
 stages:
   - conventional-commits-linting
-  - format
-  - build
+  - formatting
+  - compiling
   - end-to-end-tests
 
 
@@ -21,34 +18,34 @@ conventional-commits-linting:
     - if: $CI_MERGE_REQUEST_ID
 
 
-format:
-  stage: format
+formatting:
+  stage: formatting
+  image: python:3
   before_script:
-    - pacman -Sy --noconfirm
-    - pacman -S python python-pycodestyle --noconfirm
+    - pip install pycodestyle
   script:
-    - pycodestyle image-steganography.py
+    - pycodestyle image-steganography.py --max-line-length=140
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "master"
 
 
-build:
-  stage: build
+compiling:
+  stage: compiling
+  image: python:2
   before_script:
-    - pacman -Sy --noconfirm
-    - pacman -S python2 python-virtualenv python2-pip --noconfirm
-    - virtualenv -p python2 .venv
-    - source .venv/bin/activate
     - pip2 install -r requirements.txt
   script:
     - python2 -m py_compile image-steganography.py
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "master"
 
 
 non-encrypted-end-to-end-test:
   stage: end-to-end-tests
+  image: python:2
   before_script:
-    - pacman -Sy --noconfirm
-    - pacman -S python2 python-virtualenv python2-pip diffutils --noconfirm
-    - virtualenv -p python2 .venv
-    - source .venv/bin/activate
     - pip2 install -r requirements.txt
   script:
     - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
@@ -60,11 +57,8 @@ non-encrypted-end-to-end-test:
 
 encrypted-end-to-end-test:
   stage: end-to-end-tests
+  image: python:2
   before_script:
-    - pacman -Sy --noconfirm
-    - pacman -S python2 python-virtualenv python2-pip diffutils --noconfirm
-    - virtualenv -p python2 .venv
-    - source .venv/bin/activate
     - pip2 install -r requirements.txt
   script:
     - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
