@@ -1,5 +1,5 @@
 # Image Steganography
-[![pipeline status](https://gitlab.com/DeveloperC/image-steganography/badges/master/pipeline.svg)](https://gitlab.com/DeveloperC/image-steganography/commits/master) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![pipeline status](https://gitlab.com/DeveloperC/image-steganography/badges/master/pipeline.svg)](https://gitlab.com/DeveloperC/image-steganography/commits/master) [![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 This Python program provides the capability to conduct image steganography. Encoding or decoding any data into a .png image, with nominal changes to the appearance of the encoded image. The program also has the added capability of automatically implementing AES encryption/decryption on the data file, therefore encoded data if detected, is still confidential.
 
