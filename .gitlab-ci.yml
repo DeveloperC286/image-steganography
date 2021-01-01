@@ -1,9 +1,25 @@
 image: archlinux/base
 
+
 stages:
+  - conventional-commits-linting
   - format
   - build
   - end-to-end-tests
+
+
+conventional-commits-linting:
+  stage: conventional-commits-linting
+  image: rust
+  before_script:
+    - cargo install conventional_commits_linter
+  script:
+    - COMMON_ANCESTOR_COMMIT=`git merge-base origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME`
+    # Lint all the commits in the branch.
+    - /usr/local/cargo/bin/conventional_commits_linter --from-commit-hash $COMMON_ANCESTOR_COMMIT --allow-angular-type-only
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
 
 format:
   stage: format
@@ -12,6 +28,7 @@ format:
     - pacman -S python python-pycodestyle --noconfirm
   script:
     - pycodestyle image-steganography.py
+
 
 build:
   stage: build
@@ -23,6 +40,7 @@ build:
     - pip2 install -r requirements.txt
   script:
     - python2 -m py_compile image-steganography.py
+
 
 non-encrypted-end-to-end-test:
   stage: end-to-end-tests
