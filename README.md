@@ -4,15 +4,11 @@
 This Python program provides the capability to conduct image steganography. Encoding or decoding any data into a .png image, with nominal changes to the appearance of the encoded image. The program also has the added capability of automatically implementing AES encryption/decryption on the data file, therefore encoded data if detected, is still confidential.
 
 ## Benefits
-<ul>
-  <li>Nominal or no appearance change.</li>
-  <li>CBC AES encryption/decryption inbuilt.</li>
-</ul>
+ * Nominal or no appearance change.
+ * CBC AES encryption/decryption inbuilt.
 
 ## Limitations
-<ul>
-  <li>Limited available encoding space depending upon image size.</li>
-</ul>
+ * Limited available encoding space depending upon image size.
 
 ## Installing Dependencies
 via Arch Linux's package manager.
