@@ -5,6 +5,18 @@
 This Python program provides the capability to conduct image steganography. Encoding or decoding any data into a .png image, with nominal changes to the appearance of the encoded image. The program also has the added capability of automatically implementing AES encryption/decryption on the data file, therefore encoded data if detected, is still confidential.
 
 
+## Content
+ * [Benefits](#benefits)
+ * [Limitations](#limitations)
+ * [Installing Dependencies](#installing-dependencies)
+ * [Non-Encryption Usage](#non-encryption-usage)
+   + [Encoding](#encoding)
+   + [Decoding](#decoding)
+ * [Encryption Usage](#encryption-usage)
+   + [Encoding](#encoding-1)
+   + [Decoding](#decoding-1)
+
+
 ## Benefits
  * Nominal or no appearance change.
  * CBC AES encryption/decryption inbuilt.
