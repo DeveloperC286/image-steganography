@@ -164,7 +164,7 @@ def write_binary_string(binary_string, output):
     sio = StringIO(binary_string)
     f = open(output, 'wb')
 
-    while 1:
+    while True:
         b = sio.read(8)
 
         if not b:

@@ -32,11 +32,15 @@ conventional-commits-linting:
 
 formatting:
   stage: formatting
-  image: python:3
+  image: python:3-slim
   before_script:
-    - pip install pycodestyle
+    - pip3 install autopep8
   script:
-    - pycodestyle image-steganography.py --max-line-length=140
+    - for i in $(du -a "." | awk '{print $2}' | grep -i "[.]py$"); do
+    - cp "$i" "temp.txt"
+    - autopep8 --in-place --aggressive --aggressive "$i"
+    - cmp "$i" "temp.txt" || ( echo "$i needs formatted." && exit 1 )
+    - done
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == "master"
@@ -48,7 +52,9 @@ compiling:
   before_script:
     - pip2 install -r requirements.txt
   script:
-    - python2 -m py_compile image-steganography.py
+    - for i in $(du -a "." | awk '{print $2}' | grep -i "[.]py$"); do
+    - python2 -m py_compile "$i" || ( echo "$i does not compile." && exit 1 )
+    - done
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == "master"
