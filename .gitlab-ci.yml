@@ -6,41 +6,41 @@ stages:
   - end-to-end-tests
 
 
+services:
+  - docker:dind
+
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+
+
+image:
+  name: earthly/earthly
+  entrypoint: ["/bin/sh", "-c"]
+
+
 clean-git-history-checking:
   stage: clean-git-history-checking
-  image: rust
-  before_script:
-    - cargo install clean_git_history
   script:
     # Check all the commits in the branch.
-    - /usr/local/cargo/bin/clean_git_history --from-reference "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}"
+    - earthly --ci +clean-git-history-checking --from "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}"
   rules:
     - if: $CI_MERGE_REQUEST_ID
 
 
 conventional-commits-linting:
   stage: conventional-commits-linting
-  image: rust
-  before_script:
-    - cargo install conventional_commits_linter
   script:
     # Lint all the commits in the branch.
-    - /usr/local/cargo/bin/conventional_commits_linter --from-reference "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" --allow-angular-type-only
+    - earthly --ci +conventional-commits-linting --from "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}"
   rules:
     - if: $CI_MERGE_REQUEST_ID
 
 
 formatting:
   stage: formatting
-  image: python:3-slim
-  before_script:
-    - pip3 install autopep8
   script:
-    - for i in $(du -a "." | awk '{print $2}' | grep -i "[.]py$"); do
-    - cp "$i" "temp.txt"
-    - autopep8 --in-place --aggressive --aggressive "$i"
-    - cmp "$i" "temp.txt" || ( echo "$i needs formatted." && exit 1 )
-    - done
+    - earthly --ci +check-formatting
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == "master"
@@ -48,45 +48,17 @@ formatting:
 
 compiling:
   stage: compiling
-  image: python:2
-  before_script:
-    - pip2 install -r requirements.txt
   script:
-    - for i in $(du -a "." | awk '{print $2}' | grep -i "[.]py$"); do
-    - python2 -m py_compile "$i" || ( echo "$i does not compile." && exit 1 )
-    - done
+    - earthly --ci +compiling
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == "master"
 
 
-non-encrypted-end-to-end-test:
+end-to-end-tests:
   stage: end-to-end-tests
-  image: python:2
-  before_script:
-    - pip2 install -r requirements.txt
   script:
-    - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
-    - echo "12345" > input.data
-    - python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png
-    - python2 image-steganography.py --decode --input output.image.png  --output output.data
-    - cmp --silent input.data output.data
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-    - if: $CI_COMMIT_BRANCH == "master"
-
-
-encrypted-end-to-end-test:
-  stage: end-to-end-tests
-  image: python:2
-  before_script:
-    - pip2 install -r requirements.txt
-  script:
-    - curl https://png.pngtree.com/element_our/sm/20180327/sm_5aba147bcacf2.png > input.image.png
-    - echo "12345" > input.data
-    - python2 image-steganography.py --encode --input input.image.png --data input.data --output output.image.png --key 1234567890123456
-    - python2 image-steganography.py --decode --input output.image.png  --output output.data --key 1234567890123456
-    - cmp --silent input.data output.data
+    - earthly --ci +end-to-end-tests
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == "master"
