@@ -1,3 +1,6 @@
+VERSION 0.6
+
+
 clean-git-history-checking:
     FROM rust
     RUN cargo install clean_git_history
