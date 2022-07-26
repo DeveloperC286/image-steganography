@@ -43,7 +43,7 @@ formatting:
     - earthly --ci +check-formatting
   rules:
     - if: $CI_MERGE_REQUEST_ID
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 
 compiling:
@@ -52,7 +52,7 @@ compiling:
     - earthly --ci +compiling
   rules:
     - if: $CI_MERGE_REQUEST_ID
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 
 end-to-end-tests:
@@ -61,4 +61,4 @@ end-to-end-tests:
     - earthly --ci +end-to-end-tests
   rules:
     - if: $CI_MERGE_REQUEST_ID
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
