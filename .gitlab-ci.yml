@@ -4,6 +4,7 @@ stages:
   - formatting
   - compiling
   - end-to-end-tests
+  - releasing
 
 
 services:
@@ -60,4 +61,29 @@ end-to-end-tests:
     - earthly --ci +end-to-end-tests
   rules:
     - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+
+releasing:
+  stage: releasing
+  image: registry.gitlab.com/gitlab-org/release-cli
+  before_script:
+    - apk add git
+  script:
+    # If the tag already exist then exit.
+    - new_tag=$(cat VERSION)
+    - git tag -l | grep -q "^${new_tag}$" && exit 0
+    # Where to start generating the release description from.
+    - base_commit=$(git rev-list --max-parents=0 HEAD)
+    - latest_tag=$(git tag --sort=committerdate | tail -1)
+    - description_from="${latest_tag:-${base_commit}}"
+    # Generate the release description.
+    - release_description=$(git log --format="* %s" ${description_from}.. --no-merges)
+    # Create the new release.
+    - release-cli create
+      --name "${new_tag}"
+      --description "${release_description}"
+      --tag-name "${new_tag}"
+      --ref "${CI_COMMIT_SHA}"
+  rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
